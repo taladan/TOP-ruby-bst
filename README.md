@@ -122,6 +122,7 @@ classDiagram
 
 Upon initialization of a new BST - `bst = BinarySearchTree.new(unsorted_array)`, we set root as the value of our `#build_tree` method by calling:
 
+#### Code
 ```ruby
 def initialize(array)
   @root = build_tree(array.sort.uniq)
@@ -136,6 +137,7 @@ The root of our binary tree will always be the midpoint of the array that is pas
 
 When `build_tree` is called, there are no nodes currently in existance so we have to create a node with the data we have in our array.  To do that, we call `#build_root` and pass it the value of `array`. Once we have the return value of `build_root`, we call `#insert_node` with `array` and `node` as arguments.  Finally, we return node.
 
+#### Code
 ```ruby
 def build_tree(array)
   return nil if array.empty?
@@ -148,6 +150,7 @@ end
 ### #pretty_print()
 `#pretty_print` provides a method to visualize the binary search tree.  This method is not orginal to me, but was provided in the lesson on [TOP](https://theodinproject.com) as coming from another student of the course.
 
+#### Code
 ```ruby
 def pretty_print(node = @root, prefix = '', is_left = true)
   pretty_print(node.right_child, "#{prefix}#{is_left ? '│   ' : '    '}", false) if node.right_child
@@ -186,6 +189,7 @@ If the current node is **NOT** a leaf, we do the following:
   - if `value` == `current_node.object` return current_node.object
   
 
+#### Code
 ```ruby
 def insert(value, current_node=@root)
   direction = value <=> current_node.object
@@ -222,21 +226,51 @@ def insert(value, current_node=@root)
 end
 ```
 ### #delete(value)
+#### Code
+```ruby
+```
 
 ### #find(value)
+#### Code
+```ruby
+```
 
 ### #level_order(block)
+#### Code
+```ruby
+```
 
 ### #inorder(block)
+#### Code
+```ruby
+```
 
 ### #preorder(block)
+#### Code
+```ruby
+```
 
 ### #postorder(block)
+#### Code
+```ruby
+```
 
 ### #height(node)
+#### Code
+```ruby
+```
 
 ### #depth(node)
+#### Code
+```ruby
+```
 
 ### #balanced?()
+#### Code
+```ruby
+```
 
 ### #rebalance()
+#### Code
+```ruby
+```
