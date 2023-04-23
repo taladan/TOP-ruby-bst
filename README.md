@@ -155,17 +155,72 @@ def pretty_print(node = @root, prefix = '', is_left = true)
   pretty_print(node.left_child, "#{prefix}#{is_left ? '    ' : '│   '}", true) if node.left_child
 end
 ```
-### #insert_node(array, node)
-
-[//]: # TODO: Clean this section up, it's not ready for prime time.
+### #insert_node(array, [node])
 
 `#insert(value)` provides a method for inserting a node with 'value' as its `data` into the tree. We are carrying our value through the recursion and use a directional switch named `direction` to determine the direction of traversal.  
-- First, we test our node - if it's nil, create a node and set it to the the root node.  
-- We first use a comparator (spaceship operator) to glean the relationship of `value` to the current `node.data` (less than: -1, equal to: 0, greater than: 1) and store the result in `direction`.  
-- Next we test to see if there are no children in the current node.  
-- If there are no children we use a pattern match to determine which child 
 
+We have to initially get a direction of travel.  Using the comparator operator (also known as the spaceship operator) `<=>` we can do a value comparison and get either `-1` (less than), `0` (equal to), or `1` (greater than).
 
+Once we have the direction of travel, we need to test to see if the node we're currently in is a leaf node or a branch node. We do this with the method `Node.leaf?`, which returns `true` if this node has no children or `false` if it does have a child/children.
+
+If the current node is a leaf we do the following:
+  - if `value` < `current_node.object`
+    - create new node from `value`, and set `current_node.left_branch` equal to that node
+    - set the root of the new node to `current_node`
+  - if `value` == `current_node.object`
+    - return `current_node` (we don't want duplicates in the tree)
+  - if `value` > `current_node.object`
+    - create new node from `value`, and set `current_node.right_branch` equal to that node
+
+If the current node is **NOT** a leaf, we do the following:
+  - if `value` < `current_node.object` and `current_node.left_branch` == `nil`
+    - create a new node from `value` and set it to `current_node.left_branch`
+    - set `current_node.left_branch.root` to `current_node`
+  - if `value` < `current_node.object` and `current_node.left_branch` != `nil`
+    - recurse with `insert(value, current_node.left_branch)
+  - if `value` > `current_node.object` and `current_node.right_branch` == `nil`
+    - create a new node from `value` and set it to `current_node.right_branch`
+    - set `current_node.right_branch.root` to `current_node`
+  - if `value` > `current_node.object` and `current_node.right_branch` != `nil`
+    - recurse with `insert(value, current_node.right_branch)
+  - if `value` == `current_node.object` return current_node.object
+  
+
+```ruby
+def insert(value, current_node=@root)
+  direction = value <=> current_node.object
+  
+  if current_node.leaf?
+    case direction
+    when -1
+      current_node.left_branch = create_node(value)
+      current_node.left_branch.root = current_node
+      output = current_node
+    when 0
+      output = current_node
+    when 1
+      current_node.right_branch = create_node(value)
+      current_node.right_branch.root = current_node
+      output = current_node
+    end
+    return output
+  end
+  
+  if value < current_node.object && current_node.left_branch.nil?
+    current_node.left_branch = create_node(value)
+    current_node.left_branch.root = current_node
+  elsif value < current_node.object && !current_node.left_branch.nil?
+    insert(value, current_node.left_branch)
+  elsif value > current_node.object && current_node.right_branch.nil?
+    current_node.right_branch = create_node(value)
+    current_node.right_branch.root = current_node
+  elsif value > current_node.object && !current_node.right_branch.nil?
+    insert(value, current_node.right_branch)
+  elsif value == current_node.object
+    return current_node  
+  end
+end
+```
 ### #delete(value)
 
 ### #find(value)
