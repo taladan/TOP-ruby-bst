@@ -19,7 +19,7 @@ class Node
   
   def leaf? 
     # have to have a root and no children to be a leaf
-    return true if !@root.nil? && @left_branch.nil && @right_branch.nil
+    return true if !@root.nil? && @left_branch.nil? && @right_branch.nil?
     return false
   end
 end
