@@ -1,14 +1,15 @@
 # binary_search_tree.rb
-require_relative "node"
+require_relative 'node'
 
-class BinarySearchTree 
+class BinarySearchTree
   attr_accessor :root
+
   def initialize(array)
     @root = build_tree(array.sort.uniq)
   end
-  
-  def root_value 
-    return @root.value
+
+  def root_value
+    @root.value
   end
 
   def pretty_print(node = @root, prefix = '', is_left = true)
@@ -16,10 +17,10 @@ class BinarySearchTree
     puts "#{prefix}#{is_left ? '└── ' : '┌── '}#{node.object}"
     pretty_print(node.left_branch, "#{prefix}#{is_left ? '    ' : '│   '}", true) if node.left_branch
   end
-  
-  def insert(value, current_node=@root)
+
+  def insert(value, current_node = @root)
     direction = value <=> current_node.object
-    
+
     if current_node.leaf?
       case direction
       when -1
@@ -35,7 +36,7 @@ class BinarySearchTree
       end
       return output
     end
-    
+
     if value < current_node.object && current_node.left_branch.nil?
       current_node.left_branch = create_node(value)
       current_node.left_branch.root = current_node
@@ -47,26 +48,26 @@ class BinarySearchTree
     elsif value > current_node.object && !current_node.right_branch.nil?
       insert(value, current_node.right_branch)
     elsif value == current_node.object
-      return current_node  
+      current_node
     end
   end
 
-  def find(value, current_node=@root)
+  def find(value, current_node = @root)
     return current_node if current_node.nil?
     return current_node if current_node.object == value
+
     if value < current_node.object
       find(value, current_node.left_branch)
     elsif value > current_node.object
       find(value, current_node.right_branch)
     else
-      raise "Not found"
+      raise 'Not found'
     end
   end
-  
 
-  def delete(value, node=@root)
+  def delete(value, node = @root)
     return node if node.nil?
-    
+
     root = node.root
 
     if value < node.object
@@ -75,7 +76,8 @@ class BinarySearchTree
       node.right_branch = delete(value, node.right_branch)
     else
       return nil if node.leaf?
-      if node.left_branch.nil?        
+
+      if node.left_branch.nil?
         temp = node.right_branch
         node.clear!
         return temp
@@ -85,81 +87,111 @@ class BinarySearchTree
         return temp
       else
         temp = find_right_branch_min(node.right_branch)
-        node.object = temp.object 
+        node.object = temp.object
         node.right_branch = delete(temp.object, node.right_branch)
       end
     end
-    return node
+    node
   end
 
-  def count(node=@root)
-    return 0 if node.nil? 
+  def count(node = @root)
+    return 0 if node.nil?
+
     left = count(node.left_branch)
     right = count(node.right_branch)
-    return 1 + left + right
-  end
-         
-  def tree_height(node=@root)
-    return 0 if node.nil?
-    left_branch_height = height(node.left_branch)
-    right_branch_height = height(node.right_branch)
-    return [left_branch_height, right_branch_height].max + 1
+    1 + left + right
   end
 
-  def print_tree_level_order(node=@root)
+  def tree_height(node = @root)
+    return 0 if node.nil?
+
+    left_branch_height = tree_height(node.left_branch)
+    right_branch_height = tree_height(node.right_branch)
+    [left_branch_height, right_branch_height].max + 1
+  end
+
+  def print_tree_level_order(node = @root, output = [], &block)
+    return node if node.nil?
+
     height = tree_height(@root)
     level = 0
     while level < height
-      print_level(node, level)
+      if block_given?
+        output << print_level(node, level) if block.call(print_level(node, level))
+      else
+        output << print_level(node, level)
+      end
       level += 1
     end
-    print "\n"
+    output.compact
+  end
+
+  def print_tree_inorder(node = @root, output = [], &block)
+    return node if node.nil?
+
+    print_tree_inorder(node.left_branch, output, &block)
+    if block_given?
+      output << node.object if block.call(node.object)
+    elsif node
+      output << node.object
+    end
+    print_tree_inorder(node.right_branch, output, &block)
+    output
+  end
+
+  def print_tree_preorder(node = @root, output = [], &block)
+    return node if node.nil?
+
+    if block_given?
+      output << node.object if block.call(node.object)
+    elsif node
+      output << node.object
+    end
+    print_tree_preorder(node.left_branch, output, &block)
+    print_tree_preorder(node.right_branch, output, &block)
+    output
+  end
+
+  def print_tree_postorder(node = @root, output = [], &block)
+    return node if node.nil?
+
+    print_tree_postorder(node.left_branch, output, &block)
+    print_tree_postorder(node.right_branch, output, &block)
+    if block_given?
+      output << node.object if block.call(node.object)
+    else
+      node.object
+    end
+
+    output
   end
 
   private
-  
+
   def print_level(node, level)
-    return if node.nil?
-    if level == 0
-      print "#{node.object} "
-    else
-      print_level(node.left_branch, level-1)
-      print_level(node.right_branch, level-1)
-    end
+    return node if node.nil?
+    return node.object if level == 0
+
+    print_level(node.left_branch, level - 1)
+    print_level(node.right_branch, level - 1)
   end
-  
-  def preorder()
-    # root
-    # left_branch
-    # right_branch
-  end
-  
-  def inorder(node)
-    # inorder(node.left_branch)
-    # root
-    # right_branch
-  end
-  
-  def postorder()
-    # left_branch
-    # right_branch
-    # root
-  end
-  
+
   def find_right_branch_min(node)
     return node if node.left_branch.nil?
+
     find_right_branch_min(node.left_branch)
   end
 
-  def build_tree(array, start=0, stop=array.length, current_node=@root)
-    mid = (start + stop)/2
+  def build_tree(array, start = 0, stop = array.length, current_node = @root)
+    mid = (start + stop) / 2
     return nil if start == array.length
     return nil if start > stop
+
     root = create_node(array[mid])
     root.root = current_node
-    root.left_branch = build_tree(array, start, mid-1, root)
-    root.right_branch = build_tree(array, mid+1, stop, root)
-    return root
+    root.left_branch = build_tree(array, start, mid - 1, root)
+    root.right_branch = build_tree(array, mid + 1, stop, root)
+    root
   end
 
   def create_node(object)
