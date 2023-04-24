@@ -108,6 +108,18 @@ class BinarySearchTree
     [left_branch_height, right_branch_height].max + 1
   end
 
+  def depth(value, node = @root, count = 0)
+    return node if node.nil?
+
+    search = value.instance_of?(Node) ? value : find(value)
+    return search if search.nil?
+    return count += 1 if search == node
+
+    left = depth(search, node.left_branch, count + 1)
+    right = depth(search, node.right_branch, count + 1)
+    left || right
+  end
+
   def print_tree_level_order(node = @root, output = [], &block)
     return node if node.nil?
 
