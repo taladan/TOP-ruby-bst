@@ -68,8 +68,6 @@ class BinarySearchTree
   def delete(value, node = @root)
     return node if node.nil?
 
-    root = node.root
-
     if value < node.object
       node.left_branch = delete(value, node.left_branch)
     elsif value > node.object
@@ -116,11 +114,7 @@ class BinarySearchTree
     height = tree_height(@root)
     level = 0
     while level < height
-      if block_given?
-        output << print_level(node, level) if block.call(print_level(node, level))
-      else
-        output << print_level(node, level)
-      end
+      print_level(node, level, output, &block)
       level += 1
     end
     output.compact
@@ -168,12 +162,17 @@ class BinarySearchTree
 
   private
 
-  def print_level(node, level)
+  def print_level(node, level, output = [], &block)
     return node if node.nil?
-    return node.object if level == 0
 
-    print_level(node.left_branch, level - 1)
-    print_level(node.right_branch, level - 1)
+    if level.zero? && block_given?
+      output << node.object if block.call(node.object)
+    elsif level.zero?
+      output << node.object
+    else
+      print_level(node.left_branch, level - 1, output, &block)
+      print_level(node.right_branch, level - 1, output, &block)
+    end
   end
 
   def find_right_branch_min(node)
