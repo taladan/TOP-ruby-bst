@@ -52,15 +52,14 @@ class BinarySearchTree
   end
 
   def find(value, current_node=@root)
-    # return nil if current_node.leaf? && (value > current_node.object) 
-    # return nil if current_node.leaf? && (value < current_node.object)
+    return current_node if current_node.nil?
     return current_node if current_node.object == value
     if value < current_node.object
       find(value, current_node.left_branch)
     elsif value > current_node.object
       find(value, current_node.right_branch)
     else
-      return nil
+      raise "Not found"
     end
   end
   
