@@ -120,6 +120,19 @@ class BinarySearchTree
     left || right
   end
 
+  def balanced?(node = @root)
+    return true if node.nil?
+
+    lh = balance_height(node.left_branch)
+    rh = balance_height(node.right_branch)
+
+    return true if ((lh - rh).abs <= 1) &&
+                   balanced?(node.left_branch) &&
+                   balanced?(node.right_branch)
+
+    false
+  end
+
   def print_tree_level_order(node = @root, output = [], &block)
     return node if node.nil?
 
@@ -173,6 +186,25 @@ class BinarySearchTree
   end
 
   private
+
+  def balance_height(node)
+    return 0 if node.nil?
+
+    left = balance_height(node.left_branch)
+    right = balance_height(node.right_branch)
+    [left, right].max + 1
+  end
+  # return 0 if node.nil?
+
+  # left_branch_height = check_balance(node.left_branch)
+  # return -1 if left_branch_height == -1
+
+  # right_branch_height = check_balance(node.right_branch)
+  # return -1 if right_branch_height == -1
+
+  # return -1 if (left_branch_height - right_branch_height) > 1
+
+  # [left_branch_height - right_branch_height].max + 1
 
   def print_level(node, level, output = [], &block)
     return node if node.nil?
