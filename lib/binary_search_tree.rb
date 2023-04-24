@@ -99,15 +99,34 @@ class BinarySearchTree
     return 1 + left + right
   end
          
-  # require "pry-byebug"
-  def height(node=@root)
-    # binding.pry
+  def tree_height(node=@root)
     return 0 if node.nil?
     left_branch_height = height(node.left_branch)
     right_branch_height = height(node.right_branch)
     return [left_branch_height, right_branch_height].max + 1
   end
+
+  def print_tree_level_order(node=@root)
+    height = tree_height(@root)
+    level = 0
+    while level < height
+      print_level(node, level)
+      level += 1
+    end
+    print "\n"
+  end
+
   private
+  
+  def print_level(node, level)
+    return if node.nil?
+    if level == 0
+      print "#{node.object} "
+    else
+      print_level(node.left_branch, level-1)
+      print_level(node.right_branch, level-1)
+    end
+  end
   
   def preorder()
     # root
