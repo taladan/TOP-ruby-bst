@@ -51,10 +51,83 @@ class BinarySearchTree
     end
   end
 
+  def find(value, current_node=@root)
+    # return nil if current_node.leaf? && (value > current_node.object) 
+    # return nil if current_node.leaf? && (value < current_node.object)
+    return current_node if current_node.object == value
+    if value < current_node.object
+      find(value, current_node.left_branch)
+    elsif value > current_node.object
+      find(value, current_node.right_branch)
+    else
+      return nil
+    end
+  end
+  
+
+  def delete(value, node=@root)
+    return node if node.nil?
+    
+    root = node.root
+
+    if value < node.object
+      node.left_branch = delete(value, node.left_branch)
+    elsif value > node.object
+      node.right_branch = delete(value, node.right_branch)
+    else
+      return nil if node.leaf?
+      if node.left_branch.nil?        
+        temp = node.right_branch
+        node.clear!
+        return temp
+      elsif node.right_branch.nil?
+        temp = node.left_branch
+        node.clear!
+        return temp
+      else
+        temp = find_right_branch_min(node.right_branch)
+        node.object = temp.object 
+        node.right_branch = delete(temp.object, node.right_branch)
+      end
+    end
+    return node
+  end
+
+  def count(node=@root)
+    return 0 if node.nil? 
+    left = count(node.left_branch)
+    right = count(node.right_branch)
+    return 1 + left + right
+  end
+         
   private
+  
+  def preorder()
+    # root
+    # left_branch
+    # right_branch
+  end
+  
+  def inorder(node)
+    # inorder(node.left_branch)
+    # root
+    # right_branch
+  end
+  
+  def postorder()
+    # left_branch
+    # right_branch
+    # root
+  end
+  
+  def find_right_branch_min(node)
+    return node if node.left_branch.nil?
+    find_right_branch_min(node.left_branch)
+  end
 
   def build_tree(array, start=0, stop=array.length, current_node=@root)
     mid = (start + stop)/2
+    return nil if start == array.length
     return nil if start > stop
     root = create_node(array[mid])
     root.root = current_node
