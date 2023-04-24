@@ -99,6 +99,14 @@ class BinarySearchTree
     return 1 + left + right
   end
          
+  # require "pry-byebug"
+  def height(node=@root)
+    # binding.pry
+    return 0 if node.nil?
+    left_branch_height = height(node.left_branch)
+    right_branch_height = height(node.right_branch)
+    return [left_branch_height, right_branch_height].max + 1
+  end
   private
   
   def preorder()
