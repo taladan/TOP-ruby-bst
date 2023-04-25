@@ -189,7 +189,7 @@ class BinarySearchTree
     if block_given?
       output << node.object if block.call(node.object)
     else
-      node.object
+      output << node.object
     end
 
     output
