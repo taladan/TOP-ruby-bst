@@ -133,6 +133,15 @@ class BinarySearchTree
     false
   end
 
+  def rebalance
+    return nil if balanced?
+
+    nodes = print_tree_inorder
+    stop = nodes[nodes.length / 2] - 1
+    # build_tree(nodes, 0, stop)
+    BinarySearchTree.new(nodes)
+  end
+
   def print_tree_level_order(node = @root, output = [], &block)
     return node if node.nil?
 
@@ -194,17 +203,6 @@ class BinarySearchTree
     right = balance_height(node.right_branch)
     [left, right].max + 1
   end
-  # return 0 if node.nil?
-
-  # left_branch_height = check_balance(node.left_branch)
-  # return -1 if left_branch_height == -1
-
-  # right_branch_height = check_balance(node.right_branch)
-  # return -1 if right_branch_height == -1
-
-  # return -1 if (left_branch_height - right_branch_height) > 1
-
-  # [left_branch_height - right_branch_height].max + 1
 
   def print_level(node, level, output = [], &block)
     return node if node.nil?
@@ -230,11 +228,11 @@ class BinarySearchTree
     return nil if start == array.length
     return nil if start > stop
 
-    root = create_node(array[mid])
-    root.root = current_node
-    root.left_branch = build_tree(array, start, mid - 1, root)
-    root.right_branch = build_tree(array, mid + 1, stop, root)
-    root
+    node = create_node(array[mid])
+    node.root = current_node
+    node.left_branch = build_tree(array, start, mid - 1, node)
+    node.right_branch = build_tree(array, mid + 1, stop, node)
+    node
   end
 
   def create_node(object)
