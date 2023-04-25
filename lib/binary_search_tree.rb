@@ -1,6 +1,9 @@
 # binary_search_tree.rb
+# frozen_string_literal: true
+
 require_relative 'node'
 
+# Binary Search Tree
 class BinarySearchTree
   attr_accessor :root
 
@@ -137,8 +140,6 @@ class BinarySearchTree
     return nil if balanced?
 
     nodes = print_tree_inorder
-    stop = nodes[nodes.length / 2] - 1
-    # build_tree(nodes, 0, stop)
     BinarySearchTree.new(nodes)
   end
 
